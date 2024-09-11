@@ -14,7 +14,7 @@ quality = {"l":"480p15",
            "m":"720p30",
            "h":"1080p60"}
 
-path = f"/home/jachym/Desktop/skola/mat-videa/media/videos/{video}/{quality[qual]}/"
+path = f"{cur_dir}/media/videos/{video}/{quality[qual]}/"
 
 try:
     subprocess.run(["ls",f"{path}"],check=True,capture_output=True)
@@ -31,6 +31,7 @@ for filename in os.listdir(path):
     if filename.endswith('.mp4'):
         file_path = os.path.join(path, filename)
         vid_list.append(file_path)
+vid_list.reverse()
 
 
 clips = [VideoFileClip(video) for video in vid_list]
@@ -39,4 +40,4 @@ clips = [VideoFileClip(video) for video in vid_list]
 final_clip = concatenate_videoclips(clips, method="compose")
 
 # Write the result to a file
-final_clip.write_videofile(f'{path}final.mp4', codec="libx264")
+final_clip.write_videofile(f'{path}{video}.mp4', codec="libx264")

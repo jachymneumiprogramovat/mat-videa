@@ -1,6 +1,0 @@
-# This file is used internally by FFMPEG.
-file 'file:/home/jachym/Desktop/škola/mat-videa/media/videos/lin-eq-sol/720p30/partial_movie_files/EquationSystem/2016333726_73636822_223132457.mp4'
-file 'file:/home/jachym/Desktop/škola/mat-videa/media/videos/lin-eq-sol/720p30/partial_movie_files/EquationSystem/543634251_1733944848_1171580287.mp4'
-file 'file:/home/jachym/Desktop/škola/mat-videa/media/videos/lin-eq-sol/720p30/partial_movie_files/EquationSystem/543634251_2151086753_2282154865.mp4'
-file 'file:/home/jachym/Desktop/škola/mat-videa/media/videos/lin-eq-sol/720p30/partial_movie_files/EquationSystem/543634251_1919538064_4131132508.mp4'
-file 'file:/home/jachym/Desktop/škola/mat-videa/media/videos/lin-eq-sol/720p30/partial_movie_files/EquationSystem/543634251_1812899867_2404497295.mp4'
