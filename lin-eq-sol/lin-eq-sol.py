@@ -146,34 +146,19 @@ class EquationSystem(Scene):
         self.play(FadeIn(bottom_text, shift=UP * 0.5))
         self.wait(2)
 
-    def func1(x):
-        return -3 * x + 5
 
-    def func2(x):
-        return 5 * x - 5
-
-    def func3(x):
-        return 2 * x + 0.5
 
 
 class Inequalities(Scene):
 
-    def fronting(self, list):
-        for vgroup in list:
-            for group in vgroup:
-                try:
-                    group
-                except:
-                    pass
-
     def label_area(self, axes, pos, label):
         frame = SurroundingRectangle(
-            label, color=WHITE, fill_color=BLACK, fill_opacity=1
+            label, color=WHITE, fill_color=BLACK, fill_opacity=1,z_index=1
         )
 
-        group = VGroup(frame, label)
-        group.set_z_index(5)
-        label.set_z_index(10)
+        group = VGroup(frame,label)
+        group.set_z_index(2)
+
         group.move_to(axes.coords_to_point(*pos))
         self.play(
             AnimationGroup(DrawBorderThenFill(frame), Write(label), lag_ratio=0.6)
@@ -228,20 +213,20 @@ class Inequalities(Scene):
 
         self.add(axes)
 
-        first = axes.plot(lambda x: 5 * x - 3, x_range=[0, 1.75], color=BLUE_D)
-        second = axes.plot(lambda x: -3 * x + 5, x_range=[-0.3, 2.7], color=GREEN_D)
-        third = axes.plot(lambda x: 2 * x - 0.5, x_range=[-1.35, 3.1], color=RED_D)
+        first = axes.plot(lambda x: 6 * x - 2, x_range=[-0.1, 1.75], color=BLUE_D)
+        second = axes.plot(lambda x: -3 * x + 6, x_range=[-0.3, 2.7], color=GREEN_D)
+        third = axes.plot(lambda x: 1.5 * x, x_range=[-0.5, 3.1], color=RED_D)
 
         self.play(Create(first), Create(second), Create(third))
 
         label3 = self.label_area(
-            axes, (2.55, 3), MathTex("h(x):y", "{=}", "2x-0.5", color=RED_D)
+            axes, (2.8, 3), MathTex("h(x):y", "{=}", "2x-0.5", color=RED_D,z_index=10)
         )
         label2 = self.label_area(
-            axes, (2.55, 1), MathTex("g(x):y", "{=}", "-3x+5", color=GREEN_D)
+            axes, (2.8, 1), MathTex("g(x):y", "{=}", "-3x+5", color=GREEN_D,z_index=10)
         )
         label1 = self.label_area(
-            axes, (1.25, -2), MathTex("f(x):y", "{=}", "5x-3", color=BLUE_D)
+            axes, (1.25, -2), MathTex("f(x):y", "{=}", "5x-3", color=BLUE_D,z_index=10)
         )
         labels = VGroup(label1, label2, label3)
 
@@ -251,56 +236,90 @@ class Inequalities(Scene):
         self.wait(2)
         self.play(FadeOut(nerovnice, shift=UP * 0.5))
 
-        # self.play(self.set_gray(first,second,label1,label2))
 
-        ineq3 = MathTex("h(x):y", "{<}", "2x-0.5", color=RED_D).move_to(
+        ineq3 = MathTex("h(x):y", "{<}", "2x-0.5", color=RED_D,z_index=10).move_to(
             label3[1].get_center()
         )
         self.play(TransformMatchingTex(label3[1], ineq3))
-        self.play(Indicate(ineq3[1][0]))
-        self.highlight_area(axes, third, -1.35, 3.1, RED_D, False)
-        self.fronting(labels)
+
+        ineq3.set_z_index(10)
+        self.highlight_area(axes, third, -0.5, 3.1, RED_D, False)
+        self.bring_to_front(ineq3)
         self.wait(2)
 
-        ineq2 = MathTex("g(x):y", "{<}", "-3x+5", color=GREEN_D).move_to(
+        reseni = Tex(r"Řešením nerovnice\\ je vždy poloplocha.").shift(UP * 1, LEFT * 4.6)
+
+        self.play(FadeIn(reseni, shift=UP * 0.5))
+        self.wait(3)
+
+        ineq2 = MathTex("g(x):y", "{<}", "-3x+5", color=GREEN_D,z_index=10).move_to(
             label2[1].get_center()
         )
         self.play(TransformMatchingTex(label2[1], ineq2))
-        self.play(Indicate(ineq2[1][0]))
+
+        ineq2.set_z_index(10)
         self.highlight_area(axes, second, -0.3, 2.7, GREEN_D, True)
-        self.fronting(labels)
+        self.bring_to_front(ineq2)
+
+        self.wait(3)
+
+        self.play(FadeOut(reseni, shift=UP * 0.5))
+
+
+        soustava = Tex(r"Řešením celé\\ soustavy je\\ interval se všechny\\ nerovnice překrývají.").shift(UP * 1, LEFT * 4.6)
+        self.play(FadeIn(soustava, shift=UP * 0.5))
         self.wait(2)
 
-        ineq1 = MathTex("f(x):y", "{<}", "5x-3", color=BLUE_D).move_to(
+        ineq1 = MathTex("f(x):y", "{<}", "5x-3", color=BLUE_D,z_index=10).move_to(
             label1[1].get_center()
         )
         self.play(TransformMatchingTex(label1[1], ineq1))
-        self.play(Indicate(ineq1[1][0]))
-        self.highlight_area(axes, first, -1.35, 3.1, BLUE_D, True)
-        self.fronting(labels)
+        ineq1.set_z_index(10)
+        self.highlight_area(axes, first, -0.1, 3.1, BLUE_D, True)
+        self.bring_to_front(ineq1)
         self.wait(2)
+
+        self.wait(2)
+
+
 
         # řešením nerovnice je vždy poloplocha
         # řešením celé soustavy je region kde se všechny překrývají
 
         overlap = Polygon(
-            axes.c2p(0.83, 1.16, 0),
-            axes.c2p(1.1, 1.7, 0),
-            axes.c2p(1, 2, 0),
+            axes.c2p(0.43,0.6, 0),
+            axes.c2p(1.33,2, 0),
+            axes.c2p(0.8888,3.3, 0),
             color=YELLOW,
             fill_color=YELLOW,
             fill_opacity=1,
         )
         self.add(overlap)
         self.play(Circumscribe(overlap))
-        self.wait()
+        self.wait(2)
+        self.play(FadeOut(soustava))
 
-        minimum = Dot(axes.c2p(0.83, 1.16, 0), color=YELLOW)
-        maximu = Dot(axes.c2p(1.1, 1.7, 0), color=YELLOW)
+
+        vysledek = Tex(r"Tímto intervalem\\ je $x \in [0.4,1.1]$.").shift(UP * 1, LEFT * 4.6)
+        self.play(FadeIn(vysledek,shift=UP*0.5))
+        self.wait(3)
+        minimum = Dot(axes.c2p(0.4, 0.6, 0), color=YELLOW)
+        maximu = Dot(axes.c2p(1.3, 2, 0), color=YELLOW)
 
         self.add(maximu, minimum)
         self.play(Indicate(minimum), Indicate(maximu))
 
-        mline = DashedLine(minimum, axes.c2p(0.83, 0))
-        Mline = DashedLine(maximu, axes.c2p(1.1, 0))
+        mline = DashedLine(minimum, axes.c2p(0.4, 0))
+        Mline = DashedLine(maximu, axes.c2p(1.3, 0))
         self.play(Write(mline), Write(Mline))
+        self.wait(1)
+        self.play(FadeOut(vysledek))
+
+        min = Dot(axes.c2p(0.4, 0), color=WHITE)
+        max = Dot(axes.c2p(1.3, 0), color=WHITE)
+        self.play(FadeIn(min),FadeIn(max))
+        
+
+        dovetek = Tex(r"Pro tyto $x$ existuje \\ $y$ splňující \\ všechny podmínky.").shift(UP * 1, LEFT * 4.6)
+        self.play(FadeIn(dovetek,shift=UP*0.5))
+        self.wait(3)
