@@ -185,7 +185,7 @@ class Inequalities(Scene):
                 opacity=0.2,
             )
         else:
-            bound = axes.plot(lambda x: 7)
+            bound = axes.plot(lambda x: 10)
             area = axes.get_area(
                 graph,
                 x_range=[x_min, x_max],
@@ -204,7 +204,7 @@ class Inequalities(Scene):
         #   self.wait()
 
         intro = Tex(
-            r"\centering \section*{2.~Grafické řešení soustavy\\ lineárních nerovnic}"
+            r"\centering \section*{2.~Grafické řešení soustavy\\ lineárních nerovnic.}"
         )
         self.play(Write(intro))
         frame = SurroundingRectangle(
@@ -222,9 +222,9 @@ class Inequalities(Scene):
 
         self.add(axes)
 
-        first = axes.plot(lambda x: 6 * x - 2, x_range=[-0.1, 1.75], color=BLUE_D)
+        first = axes.plot(lambda x: 6 * x - 2, x_range=[-0.1, 10], color=BLUE_D)
         second = axes.plot(lambda x: -3 * x + 6, x_range=[-0.3, 2.7], color=GREEN_D)
-        third = axes.plot(lambda x: 1.5 * x, x_range=[-0.5, 3.1], color=RED_D)
+        third = axes.plot(lambda x: 1.5 * x, x_range=[-0.5, 10], color=RED_D)
 
         self.play(Create(first), Create(second), Create(third))
 
@@ -235,11 +235,11 @@ class Inequalities(Scene):
             axes, (2.8, 1), MathTex("g(x):y~", "{=}", "~-3x+5", color=GREEN_D,z_index=10)
         )
         label1 = self.label_area(
-            axes, (1.25, -2), MathTex("f(x):y~", "{=}", "~5x-3", color=BLUE_D,z_index=10)
+            axes, (1.25,-2), MathTex("f(x):y~", "{=}", "~5x-3", color=BLUE_D,z_index=10)
         )
         labels = VGroup(label1, label2, label3)
 
-        nerovnice = Tex(r"Nyní řešme \\ soustavu nerovnic").shift(UP * 1, LEFT * 4.6)
+        nerovnice = Tex(r"Nyní řešme \\ soustavu nerovnic.").shift(UP * 1, LEFT * 4.6)
 
         self.play(FadeIn(nerovnice, shift=UP * 0.5))
         self.wait(2)
@@ -255,7 +255,7 @@ class Inequalities(Scene):
         self.play(TransformMatchingTex(label3[1], ineq3))
 
         ineq3.set_z_index(10)
-        self.highlight_area(axes, third, -0.5, 3.1, RED_D, False)
+        self.highlight_area(axes, third, -0.5, 8, RED_D, False)
         self.bring_to_front(ineq3)
         self.wait(2)
 
@@ -269,7 +269,7 @@ class Inequalities(Scene):
 
         #modra funkce----------------
 
-        soustava = Tex(r"Řešením celé\\soustavy je\\interval, kde se \\ řešení všech ronvnic\\  překrývají.").shift(UP * 1, LEFT * 4.6)
+        soustava = Tex(r"Řešením celé\\soustavy je\\oblast, kde se \\ řešení všech ronvnic\\  překrývají.").shift(UP * 1, LEFT * 4.6)
         self.play(FadeIn(soustava, shift=UP * 0.5))
         self.wait(2)
 
@@ -280,15 +280,15 @@ class Inequalities(Scene):
         )
         self.play(TransformMatchingTex(label1[1], ineq1))
         ineq1.set_z_index(10)
-        self.highlight_area(axes, first, -0.1, 5, BLUE_D, True)
+        self.highlight_area(axes, first, -0.1, 10, BLUE_D, True)
         self.bring_to_front(ineq1)
         self.wait(2)
 
         #show the area
         semi_area = Polygon(
             axes.c2p(0.43,0.6, 0),
-            axes.c2p(3.3,5,0),
-            axes.c2p(1.5,7),
+            axes.c2p(4.8,7.25,0),
+            axes.c2p(1.6,7.5),
             color=YELLOW,
             fill_color = YELLOW,
             fill_opacity = 0.5,
@@ -335,7 +335,7 @@ class Inequalities(Scene):
         self.play(FadeOut(soustava))
 
 
-        vysledek = Tex(r"Tímto intervalem\\ je  $<0.4,1.3>$.").shift(UP * 1, LEFT * 4.6)
+        vysledek = Tex(r"Tímto intervalem\\ je  $\langle 0.4,1.3 \rangle$.").shift(UP * 1, LEFT * 4.6)
         self.play(FadeIn(vysledek,shift=UP*0.5))
         self.wait(3)
         minimum = Dot(axes.c2p(0.43, 0.6, 0), color=YELLOW)
@@ -355,6 +355,6 @@ class Inequalities(Scene):
         self.play(FadeIn(min),FadeIn(max))
         
 
-        dovetek = Tex(r"Pro tyto $x$ existuje \\ $y$ splňující \\ všechny podmínky.").shift(UP * 1, LEFT * 4.6)
+        dovetek = Tex(r"Pro tato $x$ existuje \\ $y$ splňující \\ všechny nerovnice.").shift(UP * 1, LEFT * 4.6)
         self.play(FadeIn(dovetek,shift=UP*0.5))
         self.wait(3)
