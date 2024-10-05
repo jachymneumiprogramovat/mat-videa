@@ -8,9 +8,9 @@ PRAVA = constants.PRAVA
 
 class Vectors(Scene):
     def construct(self):
-        self.next_section(skip_animations=True)
+        self.next_section(skip_animations=False)
         self.section1()
-        self.next_section(skip_animations=True)
+        self.next_section(skip_animations=False)
         self.section2()
 
     def section1(self):
