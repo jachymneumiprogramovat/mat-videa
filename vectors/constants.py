@@ -1,0 +1,4 @@
+LEVA =3.5
+NAHORU = 2.5
+DOLU = 2
+PRAVA = 3.5
