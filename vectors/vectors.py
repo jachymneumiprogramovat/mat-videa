@@ -7,13 +7,20 @@ DOLU = constants.DOLU
 PRAVA = constants.PRAVA
 
 class Vectors(Scene):
-    def construct(self):
-        self.next_section(skip_animations=True)
-        self.section1()
-        self.next_section(skip_animations=False)
-        self.section2()
+    def calculate_dot(self,c,k,teta):
+        uu = 3
+        vx = c*2
+        vy = k*4
+        vv = np.sqrt(vx**2 + vy**2)
+        cos = np.cos(teta)
+        return (teta, cos, vv*uu*cos )
 
-    def section1(self):
+
+    def construct(self):
+
+        #--------- Definování ----------------
+        self.next_section(skip_animations=True)
+        #region
         intro = Tex(
             r"\centering \section*{1.~Co je to vektor?}"
         ) 
@@ -131,12 +138,12 @@ class Vectors(Scene):
         self.wait(5)
 
         self.play(FadeOut(x,y,y_lab,x_lab,delka,velikost,vzorec,vector,obecne,axes,v_box))
+        #endregion
+        
+        #--------- Škálování ------
+        self.next_section(skip_animations=True)
+        #region
 
-        global scene
-        scene=axes
-
-
-    def section2(self):
         intro = Tex(
             r"\centering \section*{2.~Sčítání vektorů a násobení skalárem.}"
         ) 
@@ -147,7 +154,7 @@ class Vectors(Scene):
         axes.x_axis.numbers.set_opacity(0)
         axes.y_axis.numbers.set_opacity(0)
 
-        self.play(FadeIn(scene))
+        self.play(FadeIn(axes))
 
         skalovani = Tex(r"Násobení vektoru číslem,\\ neboli škálování, je intuitivní:"
                         ).move_to(LEFT*LEVA+UP*NAHORU)
@@ -204,12 +211,11 @@ class Vectors(Scene):
         self.wait()
 
         self.play(FadeOut(nl,normal,skalovani,gen,popis,g_box))
+        #endregion
 
-
-        self.next_section(skip_animations=False)
-        #---------------------------------------Sčítání--------------------
-
-
+        #----------- Sčítání ----------------
+        self.next_section(skip_animations=True)
+        #region
         scitani = Tex(r"Jestliže chceme sečíst\\ vektory $\vec{v}$ a $\vec{u}$,\\ položíme konec jednoho z nich\\ na začátek toho druhého. "
                       ).move_to(LEFT*LEVA+UP*NAHORU)
         scitani[0][30:32].set_color(RED_D)
@@ -282,7 +288,12 @@ class Vectors(Scene):
 
         self.play(FadeOut(w,w_lab,vzorec,scitani,w_box,))
 
-        #-------------------- Odčítání -------------------
+        #endregion
+
+        #------------- Odčítání --------------
+        self.next_section(skip_animations=True)
+        #region
+
         u_lab.clear_updaters()
         u_lab.add_updater(lambda m: m.next_to(vec2,LEFT))
         self.play(
@@ -342,3 +353,114 @@ class Vectors(Scene):
         )
         self.play(AnimationGroup(DrawBorderThenFill(v_box),Write(vzor)))
         self.wait(5)
+        self.play([FadeOut(mob) for mob in self.mobjects])
+        #endregion
+
+        #---------- Skalární součin ----------
+        self.next_section(skip_animations=False)
+        #region
+        intro_ssoucin = Tex(
+            r"\centering \section*{3.~Skalární součin.}"
+        ) 
+        self.play(Write(intro_ssoucin))
+        self.wait(1)
+        self.play(FadeOut(intro_ssoucin))
+        self.play(FadeIn(axes))
+
+        c = ValueTracker(1)
+        k = ValueTracker(1)
+        v = Vector(axes.c2p(c.get_value()*2,k.get_value()*4),color=RED_D)
+        u = Vector(axes.c2p(3,0),color=GREEN_D)
+
+
+        vl = MathTex(r"\vec{v}",color=RED_D).next_to(v,LEFT).shift(UP)
+        ul = MathTex(r"\vec{u}",color=GREEN_D).next_to(u,DOWN)
+
+        ul.add_updater(lambda m: m.next_to(u,DOWN))
+        vl.add_updater(lambda m: m.next_to(v,LEFT).shift(UP))
+        teta = Angle(u,v,radius=0.8,color=BLUE_D)
+        tl = MathTex(r"\theta",color=BLUE_D).next_to(teta,RIGHT)
+
+        self.play(FadeIn(u),FadeIn(v),FadeIn(vl),FadeIn(ul),FadeIn(teta),FadeIn(tl))
+
+
+
+        sdef1 = Tex(r"Geometrická definice \\ skalárního součinu je:"
+                    ).move_to(LEFT*LEVA+UP*NAHORU)
+        
+       
+        svzor = MathTex(r"\vec{v}",r"~\cdot~",
+                    r"\vec{u}",r"~=~",
+                    r"|\vec{v}|",r"|\vec{u}|",r"\cos \theta"
+                    ).move_to(LEFT*LEVA+UP*(NAHORU-1.5))
+        
+        svzor[0].set_color(RED_D)
+        svzor[4][1:3].set_color(RED_D)
+
+        svzor[2].set_color(GREEN_D)
+        svzor[5][1:3].set_color(GREEN_D)
+
+        svzor[6][3].set_color(BLUE_D)
+
+
+        scal_box = SurroundingRectangle(
+            svzor, color=WHITE, fill_color=BLACK, fill_opacity=1, z_index=0,buff=0.2
+        )
+        self.play(AnimationGroup(
+            Write(sdef1),
+            DrawBorderThenFill(scal_box),
+            Write(svzor),
+            lag_ratio=0.5
+        ))
+
+
+        skalar = Tex(r"Výsledkem skalárního součinu\\ je skalár, neboli číslo."
+                     ).move_to(LEFT*LEVA+DOWN*DOLU)
+        self.play(Write(skalar))
+
+        proc = Tex(r"Proč zrovna~",r"$\cos \theta$","?!"
+                   ).move_to(LEFT*LEVA+UP*NAHORU)
+        proc[1][3].set_color(BLUE_D)
+
+        self.play(AnimationGroup(
+            FadeOut(sdef1,shift=UP*0.5),
+            FadeIn(proc,shift=UP*0.5))
+            )
+
+        self.play(FadeOut(skalar))
+
+        projekce = Tex(r"Abychom mohli pouze\\ vynásobit velikosti vektorů\\ musí být tyto velikosti\\ ve ", "stejném"," směru."
+                       ).move_to(LEFT*LEVA+DOWN*DOLU)
+        
+
+        stejny_smer = Tex(r"Funkce cosinus tedy\\ promítá jeden vektor\\ do směru toho druhého"
+                          ).move_to(RIGHT*PRAVA+DOWN*DOLU)
+    
+        self.play(Write(projekce))
+        self.play(Circumscribe(projekce[1]))
+        self.play(Write(stejny_smer))
+
+        balls = v.copy()
+        self.play(ReplacementTransform(
+            balls,Vector(axes.c2p(2,0),color=PURPLE)
+        ))
+
+        self.play(FadeOut(balls, stejny_smer,projekce))
+
+
+
+
+        #pro výpočet skalárního součinu ze souřadnic vektorů vyplatí se použít vztah:
+        svzor = MathTex(r"\vec{v}",r"~\cdot~",
+                    r"\vec{u}",r"~=~",
+                    r"v_x",r"u_x",r"~+~",
+                    r"v_y",r"u_y"
+                    ).move_to(LEFT*LEVA+UP*(NAHORU-1.5))
+        svzor[0].set_color(RED_D)
+        svzor[4].set_color(RED_D)
+        svzor[7].set_color(RED_D)
+
+        svzor[2].set_color(GREEN_D)
+        svzor[5].set_color(GREEN_D)
+        svzor[8].set_color(GREEN_D)
+        #endregion
