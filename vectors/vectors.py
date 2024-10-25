@@ -13,7 +13,7 @@ class Vectors(Scene):
         vy = k*4
         vv = np.sqrt(vx**2 + vy**2)
         cos = np.cos(teta)
-        return (teta, cos, vv*uu*cos )
+        return [teta, cos, vv*uu*cos]
 
 
     def construct(self):
@@ -372,6 +372,10 @@ class Vectors(Scene):
         v = Vector(axes.c2p(c.get_value()*2,k.get_value()*4),color=RED_D)
         u = Vector(axes.c2p(3,0),color=GREEN_D)
 
+        v.add_updater(
+            lambda mob: mob.become(Vector(axes.c2p(c.get_value()*2,k.get_value()*4),color=RED_D))
+        )
+
 
         vl = MathTex(r"\vec{v}",color=RED_D).next_to(v,LEFT).shift(UP)
         ul = MathTex(r"\vec{u}",color=GREEN_D).next_to(u,DOWN)
@@ -448,6 +452,61 @@ class Vectors(Scene):
         self.play(FadeOut(balls, stejny_smer,projekce))
 
 
+        gen_dot = MathTex(r"\vec{v}",r"~\cdot~",
+                    r"\vec{u}",r"~=~",f"{round(self.calculate_dot(c.get_value(),k.get_value(),teta.get_value())[2],2)}"
+                    )
+        gen_dot[0].set_color(RED_D)
+        gen_dot[2].set_color(GREEN_D)
+
+        def gen_dot_updater(mob):
+            final = MathTex(r"\vec{v}",r"~\cdot~",
+                    r"\vec{u}",r"~=~",f"{round(self.calculate_dot(c.get_value(),k.get_value(),teta.get_value())[2],2)}"
+                    )
+            final[0].set_color(RED_D)
+            final[2].set_color(GREEN_D)
+            return mob.become(final)
+        gen_dot.add_updater(gen_dot_updater)
+
+        
+        cosinus = MathTex(r"\cos",r"\theta","~=~",
+                          f"{round(self.calculate_dot(c.get_value(),k.get_value(),teta.get_value())[1],2)}"
+                          ).next_to(gen_dot,DOWN)
+        cosinus[1].set_color(BLUE_D)
+
+        def cos_updater(mob):
+            final = MathTex(r"\cos",r"\theta","~=~",
+                          f"{round(self.calculate_dot(c.get_value(),k.get_value(),teta.get_value())[1],2)}"
+                          )
+            final[1].set_color(BLUE_D)
+            mob.become(final)
+        cosinus.add_updater(cos_updater)
+
+        theta = MathTex(r"\theta","~=~",
+                        f"{round(self.calculate_dot(c.get_value(),k.get_value(),teta.get_value())[0],2)}"
+                        ).next_to(cosinus,DOWN)
+        theta[0].set_color(BLUE_D)
+
+        def theta_updater(mob):
+            final = MathTex(r"\theta","~=~",
+                        f"{round(self.calculate_dot(c.get_value(),k.get_value(),teta.get_value())[0],2)}"
+                        ).next_to(cosinus,DOWN)
+            final[0].set_color(BLUE_D)
+            mob.become(final)
+        theta.add_updater(theta_updater)
+
+        text = VGroup(gen_dot,cosinus,theta)
+        text.arrange(DOWN,aligned_edge = LEFT)
+        text.shift(LEFT*LEVA+DOWN*DOLU)
+        gen_lab = SurroundingRectangle(
+            text, color=WHITE, fill_color=BLACK, fill_opacity=1, z_index=0,buff=0.2
+        )
+
+        self.play(AnimationGroup(DrawBorderThenFill(gen_lab),Write(text)))
+
+        self.play(c.animate.set_value(2))
+        self.play(k.animate.set_value(3))
+
+
 
 
         #pro výpočet skalárního součinu ze souřadnic vektorů vyplatí se použít vztah:
@@ -463,4 +522,6 @@ class Vectors(Scene):
         svzor[2].set_color(GREEN_D)
         svzor[5].set_color(GREEN_D)
         svzor[8].set_color(GREEN_D)
+
+
         #endregion
