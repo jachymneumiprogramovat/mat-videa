@@ -15,7 +15,7 @@ class Vectors(Scene):
         vv = np.sqrt(vx**2 + vy**2)
         cos = (uu * vx) / (uu * vv)
         theta = np.arccos(cos)
-        return theta, cos, uu * vx
+        return theta, cos, uu * vx * cos
 
     def construct(self):
         # --------- Definování ----------------
@@ -395,7 +395,7 @@ class Vectors(Scene):
         # endregion
 
         # ---------- Skalární součin ----------
-        self.next_section(skip_animations=False)
+        self.next_section(skip_animations=True)
         # region
         intro_ssoucin = Tex(r"\centering \section*{3.~Skalární součin.}")
         self.play(Write(intro_ssoucin))
@@ -411,9 +411,11 @@ class Vectors(Scene):
         u = Vector(axes.c2p(3, 0), color=GREEN_D)
 
         vl = always_redraw(
-            lambda: MathTex(r"\vec{v}", color=RED_D).next_to(v, LEFT).shift(UP)
+            lambda: MathTex(r"\vec{v}", color=RED_D).next_to(v, LEFT).shift(RIGHT)
         )
-        ul = always_redraw(lambda: MathTex(r"\vec{u}", color=GREEN_D).next_to(u, DOWN))
+        ul = always_redraw(
+            lambda: MathTex(r"\vec{u}", color=GREEN_D).next_to(u, DOWN).shift(RIGHT * 1.5)
+        )
 
         teta = always_redraw(lambda: Angle(u, v, radius=0.8, color=BLUE_D))
 
@@ -450,6 +452,7 @@ class Vectors(Scene):
         scal_box = SurroundingRectangle(
             svzor, color=WHITE, fill_color=BLACK, fill_opacity=1, z_index=0, buff=0.2
         )
+
         self.play(
             AnimationGroup(
                 Write(sdef1), DrawBorderThenFill(scal_box), Write(svzor), lag_ratio=0.5
@@ -487,9 +490,22 @@ class Vectors(Scene):
         self.play(Write(stejny_smer))
 
         balls = v.copy()
-        self.play(ReplacementTransform(balls, Vector(axes.c2p(2, 0), color=PURPLE)))
+        new_vec = Vector(axes.c2p(2, 0), color=PURPLE)
+        vec_lab = MathTex(r"|\vec{v}|",r"\cos",r"\theta").next_to(new_vec,DOWN)
+        vec_lab[2].set_color(BLUE_D)
+        vec_lab[0].set_color(RED_D)
 
-        self.play(FadeOut(balls, stejny_smer, projekce))
+        dot_line = DashedLine(axes.c2p(2, 4), axes.c2p(2,0), color = WHITE)
+
+
+        self.play(AnimationGroup(
+            Write(dot_line),
+            ReplacementTransform(balls, new_vec)),
+            FadeIn(vec_lab),
+            lag_ration = 0.8
+            )
+
+        self.play(FadeOut(balls, stejny_smer, projekce,new_vec,vec_lab,dot_line))
 
         def get_gen_dot(mob):
             gen_dot_new = MathTex(
@@ -536,8 +552,9 @@ class Vectors(Scene):
             theta_new = MathTex(
                 r"\theta",
                 "~=~",
-                f"{self.calculate_dot(c.get_value(), k.get_value())[0]:.2f}",
+                f"{np.rad2deg(self.calculate_dot(c.get_value(), k.get_value())[0]):.2f}",
             )
+            theta_new[0].set_color(BLUE_D)
             return mob.become(theta_new)
 
         theta = MathTex(
@@ -560,45 +577,75 @@ class Vectors(Scene):
             .shift(LEFT * LEVA + DOWN * DOLU)
         )
 
+
         gen_lab = SurroundingRectangle(
-            text, color=WHITE, fill_color=BLACK, fill_opacity=1, z_index=0, buff=0.2
+            text, color=WHITE, fill_color=BLACK, fill_opacity=1, z_index=0, buff=0.4
         )
+
+
 
         self.play(AnimationGroup(DrawBorderThenFill(gen_lab), Write(text)))
 
         self.play(
-            c.animate.set_value(2.5),
+            c.animate.set_value(0),
             UpdateFromFunc(gen_dot, get_gen_dot),
             UpdateFromFunc(cosinus, get_cosinus),
             UpdateFromFunc(theta, get_theta),
             UpdateFromFunc(text, get_text),
+            run_time = 5
         )
+        self.wait(3)
         self.play(
-            k.animate.set_value(3),
+            c.animate.set_value(2),
             UpdateFromFunc(gen_dot, get_gen_dot),
             UpdateFromFunc(cosinus, get_cosinus),
             UpdateFromFunc(theta, get_theta),
             UpdateFromFunc(text, get_text),
+            run_time = 5
         )
+        self.wait(3)
 
-        # pro výpočet skalárního součinu ze souřadnic vektorů vyplatí se použít vztah:
-        svzor = MathTex(
-            r"\vec{v}",
-            r"~\cdot~",
-            r"\vec{u}",
-            r"~=~",
+        self.play(
+            k.animate.set_value(0.5),
+            UpdateFromFunc(gen_dot, get_gen_dot),
+            UpdateFromFunc(cosinus, get_cosinus),
+            UpdateFromFunc(theta, get_theta),
+            UpdateFromFunc(text, get_text),
+            run_time = 5
+        )
+        self.wait(3)
+        # endregion
+
+        # ------------- Outro ---------------
+        self.next_section(skip_animations=False)
+        # region
+        self.play(FadeOut(v,u,vl,ul,axes,teta,tl,proc,text,gen_lab,scal_box))
+
+        self.play(svzor.animate.shift(DOWN*3 + RIGHT *5))
+
+        idea = Tex(r"To že je skalární součin uměrný odchylce dvou vektorů\\ je z této definice jasné. Zajímavé je, že se také dá spočítat\\ jen ze souřadnic jednotlivých vektorů."
+                   ).shift(UP*2)  
+              
+        self.play(Write(idea))
+        self.wait(3)
+        
+        new_def = MathTex(
             r"v_x",
             r"u_x",
             r"~+~",
             r"v_y",
             r"u_y",
-        ).move_to(LEFT * LEVA + UP * (NAHORU - 1.5))
-        svzor[0].set_color(RED_D)
-        svzor[4].set_color(RED_D)
-        svzor[7].set_color(RED_D)
+            r"~=~"
+        ).next_to(svzor,LEFT)
+        new_def[0].set_color(RED_D)
+        new_def[3].set_color(RED_D)
 
-        svzor[2].set_color(GREEN_D)
-        svzor[5].set_color(GREEN_D)
-        svzor[8].set_color(GREEN_D)
+        new_def[1].set_color(GREEN_D)
+        new_def[4].set_color(GREEN_D)
+
+        self.play(Write(new_def))
+        self.wait(5)
+        self.play(Circumscribe(svzor[0:3]))
+        self.wait(3)
 
         # endregion
