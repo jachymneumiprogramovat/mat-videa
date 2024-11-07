@@ -40,10 +40,11 @@ class Vectors(Scene):
             axis_config={
                 "color": WHITE,
                 "stroke_width": 2,
-            },  # Customize axis appearance
+            },
             faded_line_ratio=2,  # To make the lines less dominant
             z_index=-1,
         )
+
 
         # Shift grid and axes to the left to make space for text on the right
         axes.shift(LEFT * 2)
@@ -65,8 +66,8 @@ class Vectors(Scene):
         self.play(Write(def1))
         self.wait(2)
 
-        vector = Vector(axes.c2p(2, 3), color=RED_D, z_index=2)
-        self.play(FadeIn(vector))
+        vector = Vector(axes.c2p(2, 3), color=RED_D,)
+        self.play(GrowArrow(vector))
         self.wait(2)
 
         dot = Dot(axes.c2p(2, 3), z_index=3)
@@ -95,7 +96,7 @@ class Vectors(Scene):
         self.play(FadeOut(def1, def2, znaceni, dot, dot_label, vec))
 
         velikost = Tex(
-            r"Co nás u vektorů bude\\ zajímat, je například\\ jejich Velikost."
+            r"Co nás u vektorů bude\\ zajímat, je například\\ jejich velikost."
         ).move_to(LEFT * LEVA + UP * NAHORU)
 
         general = Vector(axes.c2p(4, 4), color=RED_D, z_index=2)
@@ -109,9 +110,9 @@ class Vectors(Scene):
         self.wait(2)
 
         delka = Tex(
-            r"Velikost vektoru značíme $| \vec{v} |$\\ a z pytágorovi věty\\ spočítáme jako:"
+            r"Velikost vektoru značíme $| \vec{v} |$\\ a z Pythágorovi věty\\ spočítáme jako:"
         ).move_to(LEFT * LEVA + DOWN * DOLU)
-        delka[0][23:25].set_color(RED_D)
+        delka[0][25:27].set_color(RED_D)
         vzorec = (
             MathTex(r"| \vec{v} | = \sqrt{v_x^2 + v_y^2}")
             .next_to(delka, RIGHT)
@@ -126,19 +127,21 @@ class Vectors(Scene):
             vzorec, color=WHITE, fill_color=BLACK, fill_opacity=1, z_index=0, buff=0.2
         )
 
+        pythagoras = VGroup(vzorec,v_box)
+
         self.play(Write(delka))
         self.wait(3)
-        self.play(AnimationGroup(DrawBorderThenFill(v_box), Write(vzorec)))
+        self.play(AnimationGroup(DrawBorderThenFill(v_box), Write(vzorec),lag_ratio=0.2))
         self.wait(3)
 
         x = DashedLine(axes.c2p(4, 4), axes.c2p(4, 0), color=YELLOW)
         x_lab = (
             MathTex(r"v_y", color=YELLOW).next_to(x.get_last_handle(), RIGHT).shift(UP)
         )
-        y = DashedLine(axes.c2p(4, 0), axes.c2p(0, 0), color=YELLOW, z_index=1)
+        y = DashedLine (axes.c2p(0, 0),axes.c2p(4, 0), color=YELLOW, z_index=1)
         y_lab = (
             MathTex(r"v_x", color=YELLOW)
-            .next_to(y.get_last_handle(), DOWN)
+            .next_to(y.get_first_handle(), DOWN)
             .shift(RIGHT * 3)
         )
 
@@ -150,8 +153,9 @@ class Vectors(Scene):
 
         self.play(
             FadeOut(
-                x, y, y_lab, x_lab, delka, velikost, vzorec, vector, obecne, axes, v_box
-            )
+                VGroup(x, y, y_lab, x_lab, delka, velikost, vector, obecne, axes)
+            ),
+            FadeOut(pythagoras)
         )
         # endregion
 
@@ -159,7 +163,7 @@ class Vectors(Scene):
         self.next_section(skip_animations=True)
         # region
 
-        intro = Tex(r"\centering \section*{2.~Sčítání vektorů a násobení skalárem.}")
+        intro = Tex(r"\centering \section*{2.~Sčítání vektorů \\a násobení skalárem.}")
         self.play(Write(intro))
         self.wait(1)
         self.play(FadeOut(intro))
@@ -222,7 +226,7 @@ class Vectors(Scene):
 
         self.play(Write(skalovani))
         self.wait(1)
-        self.play(FadeIn(normal), Write(nl))
+        self.play(GrowArrow(normal), Write(nl))
         self.wait(2)
         self.play(AnimationGroup(DrawBorderThenFill(g_box), Write(gen)))
         self.wait(2)
@@ -236,7 +240,7 @@ class Vectors(Scene):
         # endregion
 
         # ----------- Sčítání ----------------
-        self.next_section(skip_animations=True)
+        self.next_section(skip_animations=False)
         # region
         scitani = Tex(
             r"Jestliže chceme sečíst\\ vektory $\vec{v}$ a $\vec{u}$,\\ položíme konec jednoho z nich\\ na začátek toho druhého. "
@@ -256,7 +260,7 @@ class Vectors(Scene):
 
         self.play(Write(scitani))
         self.play(FadeIn(v_lab, vec1, u_lab, vec2))
-        self.wait(5)
+        self.wait(3)
         self.play(vec2.animate.move_to(axes.c2p(3.5, 3.5)))
         self.wait(3)
 
@@ -274,32 +278,11 @@ class Vectors(Scene):
         w = Vector(axes.c2p(4, 2), color=BLUE_D)
         w_lab = MathTex(
             r"\vec{w}", "=", r"\vec{v}", "+", r"\vec{u}", z_index=2
-        ).next_to(w, RIGHT * 0.1)
+        ).next_to(w, RIGHT *0.8)
         w_lab[0].set_color(BLUE_D)
         w_lab[2].set_color(RED_D)
         w_lab[4].set_color(GREEN_D)
 
-        # What if i want to change the way w is writen later?!
-
-        # wd = MathTex(r"\vec{w}","=",r"\vec{v}","+",r"\vec{u}",z_index=2
-        #              ).move_to(DOWN*(DOLU-1)+RIGHT*PRAVA)
-        # wd[0].set_color(BLUE_D)
-        # wd[2].set_color(RED_D)
-        # wd[4].set_color(GREEN_D)
-
-        # wx = MathTex(r"w_x","=",r"v_x","+",r"u_x",z_index=2
-        #              ).move_to(DOWN*(DOLU)+RIGHT*PRAVA)
-        # wx[0].set_color(BLUE_D)
-        # wx[2].set_color(RED_D)
-        # wx[4].set_color(GREEN_D)
-
-        # wy = MathTex(r"w_y","=",r"v_y","+",r"u_y",z_index=2
-        #              ).move_to(DOWN*(DOLU+1)+RIGHT*PRAVA)
-        # wy[0].set_color(BLUE_D)
-        # wy[2].set_color(RED_D)
-        # wy[4].set_color(GREEN_D)
-
-        # wgroup = VGroup(wd,wx,wy)
         w_box = SurroundingRectangle(
             vzorec, color=WHITE, fill_color=BLACK, fill_opacity=1, z_index=0, buff=0.2
         )
@@ -323,7 +306,7 @@ class Vectors(Scene):
         # endregion
 
         # ------------- Odčítání --------------
-        self.next_section(skip_animations=True)
+        self.next_section(skip_animations=False)
         # region
 
         u_lab.clear_updaters()
@@ -337,7 +320,7 @@ class Vectors(Scene):
             r"~$\vec{v}~$",
             "a",
             r"~$\vec{u}$~",
-            r"\\je součet menšence s mínus\\ jedna násobkem menšitelem",
+            r"\\je součet menšence s mínus\\ jedna násobkem menšitele.",
         ).move_to(LEFT * (LEVA + 0.3) + UP * (NAHORU + 0.2))
         odcitani[1].set_color(RED_D)
         odcitani[3].set_color(GREEN_D)
@@ -476,13 +459,12 @@ class Vectors(Scene):
         self.play(FadeOut(skalar))
 
         projekce = Tex(
-            r"Abychom mohli pouze\\ vynásobit velikosti vektorů\\ musí být tyto velikosti\\ ve ",
-            "stejném",
-            " směru.",
+            r"Abychom mohli pouze\\ vynásobit velikosti vektorů,\\ musí být tyto velikosti\\ ve ",
+            "stejném"," směru.",
         ).move_to(LEFT * LEVA + DOWN * DOLU)
 
         stejny_smer = Tex(
-            r"Funkce cosinus tedy\\ promítá jeden vektor\\ do směru toho druhého"
+            r"Funkce cosinus tedy\\ promítá jeden vektor\\ do směru toho druhého."
         ).move_to(RIGHT * PRAVA + DOWN * DOLU)
 
         self.play(Write(projekce))
@@ -617,7 +599,7 @@ class Vectors(Scene):
         # endregion
 
         # ------------- Outro ---------------
-        self.next_section(skip_animations=False)
+        self.next_section(skip_animations=True)
         # region
         self.play(FadeOut(v,u,vl,ul,axes,teta,tl,proc,text,gen_lab,scal_box))
 
